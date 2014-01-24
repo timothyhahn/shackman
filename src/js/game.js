@@ -10,6 +10,7 @@
   shackman.Game.prototype = {
     
     create: function () {
+      shackman.game = this.game;
       var map = this.add.tilemap('tilemap');
       var tileset = this.add.tileset('tileset');
       var layer = this.add.tilemapLayer(0, 0, 640, 640, tileset, map, 0);
@@ -38,26 +39,42 @@
       for(var i = 0; i < shackman.level.length; i++){
         for(var j = 0; j < shackman.level[i].length; j++) {
           if(shackman.level[i][j] === 2){
-
-            var pickup = new CES.Entity();
-            pickup.addComponent(new shackman.components.Position(32 * j, 32 * i));
-            pickup.addComponent(new shackman.components.Velocity(0, 0));
-            pickup.addComponent(new shackman.components.Bounds(32, 32));
-            if ((Math.floor((Math.random() * 100)) + 1) > 3){
-              pickup.addComponent(new shackman.components.Sprite(this.add.sprite(32, 32, 'humanoid')));
-              pickup.addComponent(new shackman.components.Pickup(false));
-            } else {
-              pickup.addComponent(new shackman.components.Sprite(this.add.sprite(32, 32, 'funding')));
-              pickup.addComponent(new shackman.components.Pickup(true));
+            if(!(i == 11 && (j < 12 && j > 7))){ //Reserved for ghosts
+              var pickup = new CES.Entity();
+              pickup.addComponent(new shackman.components.Position(32 * j, 32 * i));
+              pickup.addComponent(new shackman.components.Bounds(32, 32));
+              if ((Math.floor((Math.random() * 100)) + 1) > 3){
+                pickup.addComponent(new shackman.components.Sprite(this.add.sprite(32, 32, 'humanoid')));
+                pickup.addComponent(new shackman.components.Pickup(false));
+              } else {
+                pickup.addComponent(new shackman.components.Sprite(this.add.sprite(32, 32, 'funding')));
+                pickup.addComponent(new shackman.components.Pickup(true));
+              }
+              this.world.addEntity(pickup);
             }
-            this.world.addEntity(pickup);
           }
         }
       }
 
+      // Create Enemies
+      var enemyTypes = ['clown', 'fate', 'fire', 'winter'];
+      for(var i = 0; i < enemyTypes.length; i++){
+        console.log(enemyTypes[i]);
+        var enemy = new CES.Entity();
+        enemy.addComponent(new shackman.components.Position((8 + i) * 32, 11 * 32));
+        enemy.addComponent(new shackman.components.Velocity(0, 0));
+        enemy.addComponent(new shackman.components.Bounds(32, 32));
+        enemy.addComponent(new shackman.components.Sprite(this.add.sprite(32, 32,  enemyTypes[i])));
+        enemy.addComponent(new shackman.components.Enemy());
+        enemy.addComponent(new shackman.components.Walker());
+        this.world.addEntity(enemy);
+      }
+
       this.world.addSystem(new shackman.systems.CollisionSystem());
+      this.world.addSystem(new shackman.systems.PowerupSystem());
       this.world.addSystem(new shackman.systems.MovementSystem());
       this.world.addSystem(new shackman.systems.RenderSystem());
+      this.world.addSystem(new shackman.systems.AISystem());
 
     },
 

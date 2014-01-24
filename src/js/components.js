@@ -38,6 +38,13 @@
 
   shackman.components.Player = CES.Component.extend({
       name: 'player',
+      specialTimer: 0,
+      init: function() {
+
+      }
+  });
+  shackman.components.Enemy = CES.Component.extend({
+      name: 'enemy',
       init: function() {
 
       }

@@ -13,6 +13,7 @@
     preload: function () {
       this.load.onLoadComplete.addOnce(this.onLoadComplete, this);
       this.load.image('player', 'assets/house.png');
+      this.load.image('mansion', 'assets/mansion.png');
       this.load.image('humanoid', 'assets/humanoid.png');
       this.load.image('fate', 'assets/fate.png');
       this.load.image('clown', 'assets/clown.png');
