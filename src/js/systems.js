@@ -37,20 +37,20 @@
             }
             if(shackman.level[gridToCheck[1]][gridToCheck[0]] === 2) {
               // Set steps to number
-              walker.steps = 4;
+              walker.steps = 8;
               // Set velocity
               switch(direction){
                 case MoveAction.LEFT:
-                  velocity.x = -8;
+                  velocity.x = -4;
                   break;
                 case MoveAction.RIGHT:
-                  velocity.x = 8;
+                  velocity.x = 4;
                   break;
                 case MoveAction.UP:
-                  velocity.y = -8;
+                  velocity.y = -4;
                   break;
                 case MoveAction.DOWN:
-                  velocity.y = 8;
+                  velocity.y = 4;
                   break;
               }
  
