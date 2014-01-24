@@ -36,10 +36,17 @@
       }
   });
 
-  shackman.components.Terrain = CES.Component.extend({
-      name: 'terrain',
-      init: function(walkable){
-        this.walkable = walkable;
+  shackman.components.Player = CES.Component.extend({
+      name: 'player',
+      init: function() {
+
+      }
+  });
+  shackman.components.Pickup = CES.Component.extend({
+      name: 'pickup',
+      init: function(special){
+        this.exists = true;
+        this.special = special;
       }
   });
 

@@ -59,9 +59,8 @@
         }
       },
       update: function(dt) {
-        var walkers, terrains;
+        var walkers;
         walkers = this.world.getEntities('position', 'velocity', 'bounds', 'walker');
-        terrains = this.world.getEntities('position', 'velocity', 'bounds', 'terrain');
 
         this.process(shackman.movequeue);
         while(shackman.movequeue.length > 0){
@@ -91,6 +90,37 @@
           }
         }
     }
+  });
+
+  shackman.systems.CollisionSystem = CES.System.extend({
+      valueInRange: function(value, min, max) {
+        return (value >= min) && (value <= max);
+      },
+      doesCollide: function(entityA, entityB) {
+        var positionA = entityA.getComponent('position');
+        var boundsA = entityA.getComponent('bounds');
+        var positionB = entityB.getComponent('position');
+        var boundsB = entityB.getComponent('bounds');
+        var xOverlap = this.valueInRange(positionA.x, positionB.x, positionB.x + boundsB.x - 5) ||
+        this.valueInRange(positionB.x, positionA.x, positionA.x + boundsA.x - 5);
+
+        var yOverlap = this.valueInRange(positionA.y, positionB.y, positionB.y + boundsB.y - 5) ||
+        this.valueInRange(positionB.y, positionA.y, positionA.y + boundsA.y - 5);
+        return xOverlap && yOverlap;
+      },
+      update: function(dt) {
+        var player, pickups;
+        player = this.world.getEntities('position', 'player', 'bounds')[0];
+        pickups = this.world.getEntities('position', 'pickup', 'bounds');
+        for(var i = 0; i < pickups.length; i++){
+          var pickup = pickups[i];
+          if(this.doesCollide(player, pickup)) {
+            pickup.exists = false;
+            pickup.getComponent('sprite').sprite.kill();
+            this.world.removeEntity(pickup);
+          }
+        }
+      }
   });
 
   shackman.systems.RenderSystem = CES.System.extend({

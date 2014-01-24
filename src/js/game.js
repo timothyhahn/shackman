@@ -24,30 +24,38 @@
       }
 
       this.world = new CES.World();
+
+      // Create Player
       this.player = new CES.Entity();
       this.player.addComponent(new shackman.components.Position(32, 32));
       this.player.addComponent(new shackman.components.Velocity(0, 0));
       this.player.addComponent(new shackman.components.Bounds(32, 32));
       this.player.addComponent(new shackman.components.Sprite(this.add.sprite(32, 32, 'player')));
       this.player.addComponent(new shackman.components.Walker());
+      this.player.addComponent(new shackman.components.Player());
       this.world.addEntity(this.player);
-      var xOff = 0;
-      var yOff = 0;
 
       for(var i = 0; i < shackman.level.length; i++){
-        for(var j = 0; j < shackman.level[i].length; j++){
-          var wall = new CES.Entity();
-          wall.addComponent(new shackman.components.Position(xOff, yOff));
-          wall.addComponent(new shackman.components.Velocity(0, 0));
-          wall.addComponent(new shackman.components.Bounds(16, 16));
-          wall.addComponent(new shackman.components.Terrain(false));
-          this.world.addEntity(wall);
-          xOff += 32;
+        for(var j = 0; j < shackman.level[i].length; j++) {
+          if(shackman.level[i][j] === 2){
+
+            var pickup = new CES.Entity();
+            pickup.addComponent(new shackman.components.Position(32 * j, 32 * i));
+            pickup.addComponent(new shackman.components.Velocity(0, 0));
+            pickup.addComponent(new shackman.components.Bounds(32, 32));
+            if ((Math.floor((Math.random() * 100)) + 1) > 3){
+              pickup.addComponent(new shackman.components.Sprite(this.add.sprite(32, 32, 'humanoid')));
+              pickup.addComponent(new shackman.components.Pickup(false));
+            } else {
+              pickup.addComponent(new shackman.components.Sprite(this.add.sprite(32, 32, 'funding')));
+              pickup.addComponent(new shackman.components.Pickup(true));
+            }
+            this.world.addEntity(pickup);
+          }
         }
-        xOff = 0;
-        yOff += 32;
       }
 
+      this.world.addSystem(new shackman.systems.CollisionSystem());
       this.world.addSystem(new shackman.systems.MovementSystem());
       this.world.addSystem(new shackman.systems.RenderSystem());
 
